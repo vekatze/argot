@@ -1,3 +1,63 @@
+import {
+  core.either {from-option},
+  core.int.show {show-int},
+  core.text.show {show-text},
+  this.combinator {many, optional},
+  this.error {report},
+  this.parser {argument-parser, parse, parser, return},
+  this.preset {flag, int-required, text-required},
+}
+
 define main(): unit {
   print("Hello, world!\n")
+}
+
+data config {
+| Config(
+    v1: bool,
+    v2: bool,
+    v3: int,
+    v4: text,
+    v5: list(text),
+  )
+}
+
+define my-argument-parser(): parser(config) {
+  with argument-parser {
+    bind v1 = flag("-b") in
+    bind v2 = flag("-c") in
+    bind mv3 = optional(int-required("--integer")) in
+    bind mv4 = optional(text-required("--clang-option")) in
+    bind v5 = many(text-required("-i")) in
+    return(
+      Config of {
+        v1,
+        v2,
+        v3 = from-option(mv3, 123),
+        v4 = from-option(mv4, *""),
+        v5,
+      },
+    )
+  }
+}
+
+define zen(): unit {
+  let result = parse(my-argument-parser()) in
+  match result {
+  | Left(e) =>
+    printf("{}\n", [report(e)])
+  | Right(v) =>
+    let Config of {v1, v2, v3, v4, v5} = v in
+    print("right\n");
+    printf("v1: {}, v2: {}, v3: {}, v4: {}\n", [
+      core.bool.show.as-show::show(v1),
+      core.bool.show.as-show::show(v2),
+      show-int(v3),
+      show-text(v4),
+    ]);
+    print("v5:\n");
+    for(v5, function (t) {
+      printf("{}\n", [t])
+    });
+  }
 }

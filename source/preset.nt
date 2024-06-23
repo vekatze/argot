@@ -1,0 +1,111 @@
+import {
+  core.float.parse {parse-float},
+  core.int.parse {parse-int},
+  this.error {
+    Argument-Missing,
+    Key-Missing,
+    Parse-Failure,
+    Value-Missing,
+  },
+  this.parser {Parser, parser},
+  this.util {split-at-key},
+}
+
+define flag(key: &text): parser(bool) {
+  Parser of {
+    reader = {
+      function (xs: list(text)) {
+        match split-at-key(key, xs) {
+        | Left(ys) =>
+          Pair(Right(False), ys)
+        | Right(Pair(ys, zs)) =>
+          Pair(Right(True), append(ys, zs))
+        }
+      }
+    },
+  }
+}
+
+define int-required(key: &text): parser(int) {
+  Parser of {
+    reader = {
+      function (xs: list(text)) {
+        match split-at-key(key, xs) {
+        | Left(ys) =>
+          Pair(Left(Key-Missing(*key)), ys)
+        | Right(Pair(ys, zs)) =>
+          match zs {
+          | Nil =>
+            Pair(Left(Value-Missing(*key)), ys)
+          | Cons(value, rest) =>
+            pin value = value in
+            match parse-int(value) {
+            | Left(_) =>
+              Pair(Left(Parse-Failure(*key, *value)), ys)
+            | Right(v) =>
+              Pair(Right(v), append(ys, rest))
+            }
+          }
+        }
+      }
+    },
+  }
+}
+
+define float-required(key: &text): parser(float) {
+  Parser of {
+    reader = {
+      function (xs: list(text)) {
+        match split-at-key(key, xs) {
+        | Left(ys) =>
+          Pair(Left(Key-Missing(*key)), ys)
+        | Right(Pair(ys, zs)) =>
+          match zs {
+          | Nil =>
+            Pair(Left(Value-Missing(*key)), ys)
+          | Cons(value, rest) =>
+            pin value = value in
+            match parse-float(value) {
+            | Left(_) =>
+              Pair(Left(Parse-Failure(*key, *value)), ys)
+            | Right(v) =>
+              Pair(Right(v), append(ys, rest))
+            }
+          }
+        }
+      }
+    },
+  }
+}
+
+define text-required(key: &text): parser(text) {
+  Parser of {
+    reader = {
+      function (xs: list(text)) {
+        match split-at-key(key, xs) {
+        | Left(ys) =>
+          Pair(Left(Key-Missing(*key)), ys)
+        | Right(Pair(ys, Nil)) =>
+          Pair(Left(Value-Missing(*key)), ys)
+        | Right(Pair(ys, Cons(value, zs))) =>
+          Pair(Right(value), append(ys, zs))
+        }
+      }
+    },
+  }
+}
+
+define text-argument(name: &text): parser(text) {
+  Parser of {
+    reader = {
+      function (xs: list(text)) {
+        match xs {
+        | Nil =>
+          Pair(Left(Argument-Missing(*name)), Nil)
+        | Cons(y, ys) =>
+          Pair(Right(y), ys)
+        }
+      }
+    },
+  }
+}

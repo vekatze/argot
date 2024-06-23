@@ -1,0 +1,71 @@
+import {
+  this.error {Argument-Missing, Key-Missing},
+  this.parser {Parser, parser},
+}
+
+define optional<a>(p: parser(a)): parser(?a) {
+  Parser of {
+    reader = {
+      function (xs: list(text)) {
+        let Parser of {reader} = p in
+        let Pair(mv, ys) = reader(xs) in
+        match mv {
+        | Left(Key-Missing(_)) =>
+          Pair(Right(none()), ys)
+        | Left(Argument-Missing(_)) =>
+          Pair(Right(none()), ys)
+        | Left(e) =>
+          Pair(Left(e), ys)
+        | Right(v) =>
+          Pair(Right(Right(v)), ys)
+        }
+      }
+    },
+  }
+}
+
+inline many<a>(p: parser(a)): parser(list(a)) {
+  Parser of {
+    reader = {
+      define loop(xs: list(text)) {
+        let Parser of {reader} = p in
+        let Pair(mv, ys) = reader(xs) in
+        match mv {
+        | Left(_) =>
+          Pair(Right([]), ys)
+        | Right(v) =>
+          let Pair(vs-or-error, rest') = loop(ys) in
+          match vs-or-error {
+          | Left(e) =>
+            Pair(Left(e), rest')
+          | Right(vs) =>
+            Pair(Right(Cons(v, vs)), rest')
+          }
+        }
+      }
+    },
+  }
+}
+
+define choice<a>(ps: list(parser(a)), fallback: parser(a)): parser(a) {
+  match ps {
+  | Nil =>
+    fallback
+  | Cons(p, rest) =>
+    Parser of {
+      reader = {
+        function (xs: list(text)) {
+          let Parser of {reader} = p in
+          let Pair(mv, ys) = reader(xs) in
+          match mv {
+          | Right(v) =>
+            Pair(Right(v), ys)
+          | Left(_) =>
+            let Parser of {reader} = choice(rest, fallback) in
+            reader(ys)
+          }
+        }
+      },
+    }
+  }
+}

@@ -1,0 +1,28 @@
+import {
+  core.text {format},
+}
+
+data error {
+| Argument-Missing(name: text)
+| Key-Missing(key: text)
+| Value-Missing(key: text)
+| Parse-Failure(key: text, value: text)
+| Remaining-Arguments(rest: list(text))
+}
+
+define report(e: error): text {
+  match e {
+  | Argument-Missing(name) =>
+    format("Missing argument: {}", [name])
+  | Key-Missing(key) =>
+    format("Missing key: {}", [key])
+  | Value-Missing(key) =>
+    format("Missing value for key: {}", [key])
+  | Parse-Failure(key, value) =>
+    format("Could not parse `{}` at `{}`", [value, key])
+  | Remaining-Arguments(rest) =>
+    format("Extra arguments: {}", [
+      core.text.intercalate(rest, *", "),
+    ])
+  }
+}
