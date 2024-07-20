@@ -58,6 +58,6 @@ define zen(): unit {
     print("v5:\n");
     for(v5, function (t) {
       printf("{}\n", [t])
-    });
+    })
   }
 }
