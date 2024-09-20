@@ -24,11 +24,11 @@ define optional<a>(p: parser(a)): parser(?a) {
   }
 }
 
-inline many<a>(p: parser(a)): parser(list(a)) {
+inline many<a>(!p: parser(a)): parser(list(a)) {
   Parser of {
     reader = {
       define loop(xs: list(text)) {
-        let Parser of {reader} = p in
+        let Parser of {reader} = !p in
         let Pair(mv, ys) = reader(xs) in
         match mv {
         | Left(_) =>
