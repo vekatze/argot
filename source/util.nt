@@ -1,5 +1,5 @@
 import {
-  core.list {drop, span},
+  core.list {drop, length, span},
 }
 
 define split-at-key(key: &text, xs: list(text)): either(list(text), pair(list(text), list(text))) {

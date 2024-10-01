@@ -1,6 +1,7 @@
 import {
   core.functor {Functor, functor},
-  core.list {drop},
+  core.list {drop, length},
+  core.system {get-argv},
   this.error {
     Remaining-Arguments,
     error,

@@ -1,6 +1,8 @@
 import {
+  core.bool.show,
   core.either {from-option},
   core.int.show {show-int},
+  core.list {for},
   core.text.show {show-text},
   this.combinator {many, optional},
   this.error {report},
