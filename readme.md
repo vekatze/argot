@@ -1,6 +1,6 @@
-# yomi
+# argot
 
-`yomi` is a monadic argument parser for the [Neut](https://vekatze.github.io/neut/) programming language.
+`argot` is a monadic option parser for the [Neut](https://vekatze.github.io/neut/) programming language.
 
 ## Summary
 
