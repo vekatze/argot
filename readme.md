@@ -18,7 +18,7 @@ define return<a>(x: a): parser(a)
 define argument-parser<a, b>(mx: parser(a), k: (a) -> parser(b)): parser(b)
 
 // run a parser
-define parse<a>(mx: parser(a)): either(error, a)
+define run<a>(mx: parser(a)): either(error, a)
 
 // decode a parse error into a text
 define report(e: error): text
@@ -77,7 +77,7 @@ define my-argument-parser(): parser(config) {
 }
 
 define zen(): unit {
-  let result = parse(my-argument-parser()) in
+  let result = run(my-argument-parser()) in
   match result {
   | Left(e) =>
     printf("{}\n", [report(e)])

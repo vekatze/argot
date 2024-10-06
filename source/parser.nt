@@ -67,7 +67,7 @@ define parse-arguments<a>(mx: parser(a), arguments: list(text)): either(error, a
   }
 }
 
-define parse<a>(mx: parser(a)): either(error, a) {
+define run<a>(mx: parser(a)): either(error, a) {
   let argv = get-argv() in
   let arguments = drop(argv, 1) in
   parse-arguments(mx, arguments)

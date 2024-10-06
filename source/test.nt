@@ -6,7 +6,7 @@ import {
   core.text.show {show-text},
   this.combinator {many, optional},
   this.error {report},
-  this.parser {argument-parser, parse, parser, return},
+  this.parser {argument-parser, parser, return, run},
   this.preset {flag, int-required, text-required},
 }
 
@@ -44,7 +44,7 @@ define my-argument-parser(): parser(config) {
 }
 
 define zen(): unit {
-  let result = parse(my-argument-parser()) in
+  let result = run(my-argument-parser()) in
   match result {
   | Left(e) =>
     printf("{}\n", [report(e)])
