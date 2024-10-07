@@ -8,7 +8,9 @@
 neut get argot https://github.com/vekatze/argot/raw/main/archive/0-1-9.tar.zst
 ```
 
-## Summary
+## Types
+
+### Basics
 
 ```neut
 data parser(a) {
@@ -23,46 +25,54 @@ define return<a>(x: a): parser(a)
 // monadic bind
 define argument-parser<a, b>(mx: parser(a), k: (a) -> parser(b)): parser(b)
 
-// run a parser
+// runs a parser
 define run<a>(mx: parser(a)): either(error, a)
 
-// decode a parse error into a text
+// converts a parse error into a human-readable text
 define report(e: error): text
+```
 
-// preset: parse a flag (`--enable-color`)
-define flag(key: &text): parser(bool)
+### Combinators
 
-// preset: parse an integer (`--my-key 1234`)
-define int-required(key: &text): parser(int)
-
-// preset: parse a float (`--my-key 23.45`)
-define float-required(key: &text): parser(float)
-
-// preset: parse text (`--clang-option "-fsanitize=address"`)
-define text-required(key: &text): parser(text)
-
-// preset: parse a positional argument (the `foo` in `my-command foo`)
-define text-argument(name: &text): parser(text)
-
-// combinator: make given parser optional
+```neut
+// makes given parser optional
 define optional<a>(p: parser(a)): parser(?a)
 
-// combinator: run given parser repeatedly until it fails
+// runs given parser repeatedly until it fails
 inline many<a>(p: parser(a)): parser(list(a))
 
-// combinator: try given parsers one by one
+// tries given parsers one by one
 define choice<a>(ps: list(parser(a)), fallback: parser(a)): parser(a)
+```
+
+### Presets
+
+```neut
+// parses a flag (`--enable-color`)
+define flag(key: &text): parser(bool)
+
+// parses an integer (`--my-key 1234`)
+define int-required(key: &text): parser(int)
+
+// parses a float (`--my-key 23.45`)
+define float-required(key: &text): parser(float)
+
+// parses a text (`--clang-option "-fsanitize=address"`)
+define text-required(key: &text): parser(text)
+
+// parses a positional argument (the `foo` in `my-command foo`)
+define text-argument(name: &text): parser(text)
 ```
 
 ## Example
 
 ```neut
-// see source/test.nt
-
+// defines a type that stores the result of argument parsing
 data config {
 | Config(v1: bool, v2: bool, v3: int, v4: text, v5: list(text))
 }
 
+// defines an argument parser
 define my-argument-parser(): parser(config) {
   with argument-parser {
     bind v1 = flag("-b") in
@@ -82,6 +92,7 @@ define my-argument-parser(): parser(config) {
   }
 }
 
+// tries the argument parser
 define zen(): unit {
   let result = run(my-argument-parser()) in
   match result {
@@ -94,8 +105,8 @@ define zen(): unit {
 }
 ```
 
-The above can read arguments like:
+The parser `my-argument-parser()` can handle arguments like the following:
 
 ```
--b --integer 123 aoe -i test -i hoge
+-b --integer 123 -i test -i hoge
 ```
