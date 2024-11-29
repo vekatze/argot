@@ -11,9 +11,9 @@ define optional<a>(p: parser(a)): parser(?a) {
         let Pair(mv, ys) = reader(xs) in
         match mv {
         | Left(Key-Missing(_)) =>
-          Pair(Right(none()), ys)
+          Pair(Right(none), ys)
         | Left(Argument-Missing(_)) =>
-          Pair(Right(none()), ys)
+          Pair(Right(none), ys)
         | Left(e) =>
           Pair(Left(e), ys)
         | Right(v) =>

@@ -27,7 +27,7 @@ define for-each<a, b>(mx: parser(a), f: (a) -> b): parser(b) {
   })
 }
 
-constant as-functor: functor(parser) {
+inline as-functor: functor(parser) {
   Functor of {for-each = this.parser.for-each}
 }
 
