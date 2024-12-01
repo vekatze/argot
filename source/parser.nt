@@ -10,7 +10,7 @@ import {
 
 data parser(a) {
 | Parser(
-    reader: (list(text)) -> pair(either(error, a), list(text)),
+    reader: (list(text)) -> pair(except(error, a), list(text)),
   )
 }
 
@@ -19,10 +19,10 @@ define for-each<a, b>(mx: parser(a), f: (a) -> b): parser(b) {
     let Parser of {reader = g} = mx in
     let Pair(mv, ys) = g(xs) in
     match mv {
-    | Left(e) =>
-      Pair(Left(e), ys)
-    | Right(v) =>
-      Pair(Right(f(v)), ys)
+    | Error(e) =>
+      Pair(Error(e), ys)
+    | OK(v) =>
+      Pair(OK(f(v)), ys)
     }
   })
 }
@@ -33,7 +33,7 @@ inline as-functor: functor(parser) {
 
 define return<a>(x: a): parser(a) {
   Parser(function (xs) {
-    Pair(Right(x), xs)
+    Pair(OK(x), xs)
   })
 }
 
@@ -42,32 +42,32 @@ define argument-parser<a, b>(mx: parser(a), k: (a) -> parser(b)): parser(b) {
     let Parser of {reader = f} = mx in
     let Pair(mv, ys) = f(xs) in
     match mv {
-    | Left(e) =>
-      Pair(Left(e), ys)
-    | Right(v) =>
+    | Error(e) =>
+      Pair(Error(e), ys)
+    | OK(v) =>
       let Parser of {reader = g} = k(v) in
       g(ys)
     }
   })
 }
 
-define parse-arguments<a>(mx: parser(a), arguments: list(text)): either(error, a) {
+define parse-arguments<a>(mx: parser(a), arguments: list(text)): except(error, a) {
   let Parser of {reader} = mx in
   let Pair(result, rest) = reader(arguments) in
   match result {
-  | Left(e) =>
-    Left(e)
-  | Right(v) =>
+  | Error(e) =>
+    Error(e)
+  | OK(v) =>
     let len on rest = length(rest) in
     if eq-int(len, 0) {
-      Right(v)
+      OK(v)
     } else {
-      Left(Remaining-Arguments(rest))
+      Error(Remaining-Arguments(rest))
     }
   }
 }
 
-define run<a>(mx: parser(a)): either(error, a) {
+define run<a>(mx: parser(a)): except(error, a) {
   let argv = get-argv() in
   let arguments = drop(argv, 1) in
   parse-arguments(mx, arguments)

@@ -2,7 +2,7 @@ import {
   core.list {drop, length, span},
 }
 
-define split-at-key(key: &text, xs: list(text)): either(list(text), pair(list(text), list(text))) {
+define split-at-key(key: &text, xs: list(text)): except(list(text), pair(list(text), list(text))) {
   let Pair(ys, zs) =
     span(xs, function (x) {
       ne-text(x, key)
@@ -10,8 +10,8 @@ define split-at-key(key: &text, xs: list(text)): either(list(text), pair(list(te
   in
   let len on zs = length(zs) in
   if eq-int(len, 0) {
-    Left(ys)
+    Error(ys)
   } else {
-    Right(Pair(ys, drop(zs, 1)))
+    OK(Pair(ys, drop(zs, 1)))
   }
 }

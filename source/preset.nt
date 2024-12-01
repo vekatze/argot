@@ -17,10 +17,10 @@ define flag(key: &text): parser(bool) {
     reader = {
       function (xs: list(text)) {
         match split-at-key(key, xs) {
-        | Left(ys) =>
-          Pair(Right(False), ys)
-        | Right(Pair(ys, zs)) =>
-          Pair(Right(True), append(ys, zs))
+        | Error(ys) =>
+          Pair(OK(False), ys)
+        | OK(Pair(ys, zs)) =>
+          Pair(OK(True), append(ys, zs))
         }
       }
     },
@@ -32,19 +32,19 @@ define int-required(key: &text): parser(int) {
     reader = {
       function (xs: list(text)) {
         match split-at-key(key, xs) {
-        | Left(ys) =>
-          Pair(Left(Key-Missing(*key)), ys)
-        | Right(Pair(ys, zs)) =>
+        | Error(ys) =>
+          Pair(Error(Key-Missing(*key)), ys)
+        | OK(Pair(ys, zs)) =>
           match zs {
           | Nil =>
-            Pair(Left(Value-Missing(*key)), ys)
+            Pair(Error(Value-Missing(*key)), ys)
           | Cons(value, rest) =>
             pin value = value in
             match parse-int(value) {
-            | Left(_) =>
-              Pair(Left(Parse-Failure(*key, *value)), ys)
-            | Right(v) =>
-              Pair(Right(v), append(ys, rest))
+            | Error(_) =>
+              Pair(Error(Parse-Failure(*key, *value)), ys)
+            | OK(v) =>
+              Pair(OK(v), append(ys, rest))
             }
           }
         }
@@ -58,19 +58,19 @@ define float-required(key: &text): parser(float) {
     reader = {
       function (xs: list(text)) {
         match split-at-key(key, xs) {
-        | Left(ys) =>
-          Pair(Left(Key-Missing(*key)), ys)
-        | Right(Pair(ys, zs)) =>
+        | Error(ys) =>
+          Pair(Error(Key-Missing(*key)), ys)
+        | OK(Pair(ys, zs)) =>
           match zs {
           | Nil =>
-            Pair(Left(Value-Missing(*key)), ys)
+            Pair(Error(Value-Missing(*key)), ys)
           | Cons(value, rest) =>
             pin value = value in
             match parse-float(value) {
-            | Left(_) =>
-              Pair(Left(Parse-Failure(*key, *value)), ys)
-            | Right(v) =>
-              Pair(Right(v), append(ys, rest))
+            | Error(_) =>
+              Pair(Error(Parse-Failure(*key, *value)), ys)
+            | OK(v) =>
+              Pair(OK(v), append(ys, rest))
             }
           }
         }
@@ -84,12 +84,12 @@ define text-required(key: &text): parser(text) {
     reader = {
       function (xs: list(text)) {
         match split-at-key(key, xs) {
-        | Left(ys) =>
-          Pair(Left(Key-Missing(*key)), ys)
-        | Right(Pair(ys, Nil)) =>
-          Pair(Left(Value-Missing(*key)), ys)
-        | Right(Pair(ys, Cons(value, zs))) =>
-          Pair(Right(value), append(ys, zs))
+        | Error(ys) =>
+          Pair(Error(Key-Missing(*key)), ys)
+        | OK(Pair(ys, Nil)) =>
+          Pair(Error(Value-Missing(*key)), ys)
+        | OK(Pair(ys, Cons(value, zs))) =>
+          Pair(OK(value), append(ys, zs))
         }
       }
     },
@@ -102,9 +102,9 @@ define text-argument(name: &text): parser(text) {
       function (xs: list(text)) {
         match xs {
         | Nil =>
-          Pair(Left(Argument-Missing(*name)), Nil)
+          Pair(Error(Argument-Missing(*name)), Nil)
         | Cons(y, ys) =>
-          Pair(Right(y), ys)
+          Pair(OK(y), ys)
         }
       }
     },

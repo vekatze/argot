@@ -1,6 +1,6 @@
 import {
   core.bool.show,
-  core.either {from-option},
+  core.except {from-option},
   core.int.show {show-int},
   core.list {for},
   core.text.show {show-text},
@@ -42,9 +42,9 @@ define my-argument-parser(): parser(config) {
 define zen(): unit {
   let result = run(my-argument-parser()) in
   match result {
-  | Left(e) =>
+  | Error(e) =>
     printf("{}\n", [report(e)])
-  | Right(v) =>
+  | OK(v) =>
     let Config of {v1, v2, v3, v4, v5} = v in
     print("right\n");
     printf("v1: {}, v2: {}, v3: {}, v4: {}\n", [
