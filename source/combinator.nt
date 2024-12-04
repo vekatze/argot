@@ -10,14 +10,14 @@ define optional<a>(p: parser(a)): parser(?a) {
         let Parser of {reader} = p in
         let Pair(mv, ys) = reader(xs) in
         match mv {
-        | Error(Key-Missing(_)) =>
-          Pair(OK(none), ys)
-        | Error(Argument-Missing(_)) =>
-          Pair(OK(none), ys)
-        | Error(e) =>
-          Pair(Error(e), ys)
-        | OK(v) =>
-          Pair(OK(OK(v)), ys)
+        | Left(Key-Missing(_)) =>
+          Pair(Right(none), ys)
+        | Left(Argument-Missing(_)) =>
+          Pair(Right(none), ys)
+        | Left(e) =>
+          Pair(Left(e), ys)
+        | Right(v) =>
+          Pair(Right(Right(v)), ys)
         }
       }
     },
@@ -31,15 +31,15 @@ inline many<a>(!p: parser(a)): parser(list(a)) {
         let Parser of {reader} = !p in
         let Pair(mv, ys) = reader(xs) in
         match mv {
-        | Error(_) =>
-          Pair(OK([]), ys)
-        | OK(v) =>
+        | Left(_) =>
+          Pair(Right([]), ys)
+        | Right(v) =>
           let Pair(vs-or-error, rest') = loop(ys) in
           match vs-or-error {
-          | Error(e) =>
-            Pair(Error(e), rest')
-          | OK(vs) =>
-            Pair(OK(Cons(v, vs)), rest')
+          | Left(e) =>
+            Pair(Left(e), rest')
+          | Right(vs) =>
+            Pair(Right(Cons(v, vs)), rest')
           }
         }
       }
@@ -58,9 +58,9 @@ define choice<a>(ps: list(parser(a)), fallback: parser(a)): parser(a) {
           let Parser of {reader} = p in
           let Pair(mv, ys) = reader(xs) in
           match mv {
-          | OK(v) =>
-            Pair(OK(v), ys)
-          | Error(_) =>
+          | Right(v) =>
+            Pair(Right(v), ys)
+          | Left(_) =>
             let Parser of {reader} = choice(rest, fallback) in
             reader(ys)
           }

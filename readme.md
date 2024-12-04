@@ -15,7 +15,7 @@ neut get argot https://github.com/vekatze/argot/raw/main/archive/0-1-18.tar.zst
 ```neut
 data parser(a) {
 | Parser(
-    reader: (list(text)) -> pair(except(error, a), list(text)),
+    reader: (list(text)) -> pair(either(error, a), list(text)),
   )
 }
 
@@ -26,7 +26,7 @@ define return<a>(x: a): parser(a)
 define argument-parser<a, b>(mx: parser(a), k: (a) -> parser(b)): parser(b)
 
 // runs a parser
-define run<a>(mx: parser(a)): except(error, a)
+define run<a>(mx: parser(a)): either(error, a)
 
 // converts a parse error into a human-readable text
 define report(e: error): text
@@ -84,8 +84,8 @@ define my-argument-parser(): parser(config) {
       Config of {
         v1,
         v2,
-        v3 = from-option(mv3, 123),
-        v4 = from-option(mv4, *""),
+        v3 = from-right(mv3, 123),
+        v4 = from-right(mv4, *""),
         v5,
       },
     )
