@@ -1,7 +1,7 @@
 import {
+  core.environment {get-argv},
   core.functor {Functor, functor},
   core.list {drop, length},
-  core.system {get-argv},
   this.error {
     Remaining-Arguments,
     error,
