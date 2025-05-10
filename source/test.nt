@@ -3,6 +3,7 @@ import {
   core.either {from-right},
   core.int.show {show-int},
   core.list {for},
+  core.show {Show},
   core.text.show {show-text},
   this.combinator {many, optional},
   this.error {report},
@@ -46,10 +47,11 @@ define zen(): unit {
     printf("{}\n", [report(e)])
   | Right(v) =>
     let Config of {v1, v2, v3, v4, v5} = v in
+    let Show of {show = !show} = core.bool.show.as-show in
     print("right\n");
     printf("v1: {}, v2: {}, v3: {}, v4: {}\n", [
-      core.bool.show.as-show::show(v1),
-      core.bool.show.as-show::show(v2),
+      !show(v1),
+      !show(v2),
       show-int(v3),
       show-text(v4),
     ]);
