@@ -1,0 +1,75 @@
+import {
+  core.cell {borrow},
+  core.list {append},
+  this.move.make-argot-kit {make-argot-kit},
+  this.move.private.state {_break-at-key, _modify},
+  this.rule.argot-kit {_Argot-Kit, argot-kit},
+  this.rule.error {Key-Missing, Unexpected-End-Of-Input, Value-Missing, error},
+}
+
+define get-num-of-items(k: &argot-kit): int {
+  tie _Argot-Kit of {input-ref} = k in
+  borrow(input-ref, function (xs) {
+    quote {core.list.length(xs)}
+  })
+}
+
+define export-state(k: &argot-kit): list(text) {
+  tie _Argot-Kit of {input-ref} = k in
+  core.cell.clone(input-ref)
+}
+
+define import-state(k: &argot-kit, xs: list(text)): unit {
+  tie _Argot-Kit of {input-ref} = k in
+  core.cell.mutate(input-ref, function (_) {
+    xs
+  })
+}
+
+define pop-key(k: &argot-kit, key: &text): bool {
+  tie _Argot-Kit of {input-ref} = k in
+  _modify(input-ref, function (input) {
+    let Pair(ys, zs) = _break-at-key(input, key) in
+    match zs {
+    | Nil =>
+      Pair(ys, False)
+    | Cons(_, rest) =>
+      Pair(append(ys, rest), True)
+    }
+  })
+}
+
+define pop-key-value(k: &argot-kit, key: &text): either(error, text) {
+  tie _Argot-Kit of {input-ref} = k in
+  _modify(input-ref, function (input) {
+    let Pair(ys, zs) = _break-at-key(input, key) in
+    match zs {
+    | Cons(_, Cons(z2, rest)) =>
+      Pair(append(ys, rest), Right(z2))
+    | Cons(z, Nil) =>
+      Pair(append(ys, Cons(z, Nil)), Left(Value-Missing(*key)))
+    | zs =>
+      Pair(append(ys, zs), Left(Key-Missing(*key)))
+    }
+  })
+}
+
+define pop-head(k: &argot-kit): either(error, text) {
+  tie _Argot-Kit of {input-ref} = k in
+  _modify(input-ref, function (input) {
+    match input {
+    | Nil =>
+      Pair(Nil, Left(Unexpected-End-Of-Input))
+    | Cons(x, xs) =>
+      Pair(xs, Right(x))
+    }
+  })
+}
+
+define zen(): unit {
+  pin k = make-argot-kit([*"foo", *"bar", *"buz", *"bar"]) in
+  let _ = pop-key(k, "bar") in
+  let _ = pop-key(k, "bar") in
+  let _ = pop-key(k, "bar") in
+  Unit
+}

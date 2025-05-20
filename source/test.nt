@@ -3,11 +3,11 @@ import {
   core.either {from-right},
   core.environment {get-argv},
   core.int.show {show-int},
-  core.list {for},
+  core.list {drop, for},
   core.show {Show},
   core.text.show {show-text},
-  this.move.combinator {end-of-input, many, optional},
   this.move.make-argot-kit {make-argot-kit},
+  this.move.parse {end-of-input, many, optional},
   this.move.preset {flag, int-required, text-required},
   this.rule.argot {argot},
   this.rule.error {report},
@@ -48,7 +48,7 @@ define my-argument-parser: argot(config) {
 }
 
 define zen(): unit {
-  pin k = make-argot-kit(get-argv()) in
+  pin k = make-argot-kit(drop(get-argv(), 1)) in
   let result = my-argument-parser(k) in
   match result {
   | Left(e) =>

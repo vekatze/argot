@@ -9,7 +9,6 @@ data error {
 | Parse-Failure(key: text, value: text)
 | Remaining-Arguments(rest: list(text))
 | Unexpected-End-Of-Input
-| Unexpected-Input
 | Key-Mismatch(expected: &text, found: &text)
 }
 
@@ -25,10 +24,8 @@ define report(e: error): text {
     format("Could not parse `{}` at `{}`", [value, key])
   | Remaining-Arguments(rest) =>
     format("Extra arguments: {}", [
-      core.text.intercalate(rest, *", "),
+      core.text.intercalate(rest, *" "),
     ])
-  | Unexpected-Input =>
-    *"Unexpected input"
   | Unexpected-End-Of-Input =>
     *"Unexpected end of input"
   | Key-Mismatch(_, _) =>

@@ -1,7 +1,7 @@
 import {
   core.float.parse {parse-float},
   core.int.parse {parse-int},
-  this.move.private.state {pop-head, pop-key, pop-key-value},
+  this.move.state {pop-head, pop-key, pop-key-value},
   this.rule.argot {argot},
   this.rule.error {Parse-Failure},
 }

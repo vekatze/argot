@@ -1,7 +1,7 @@
 import {
-  this.move.private.state {export-state, get-num-of-items, import-state},
+  this.move.state {export-state, get-num-of-items, import-state},
   this.rule.argot {argot},
-  this.rule.error {Unexpected-Input, error},
+  this.rule.error {Remaining-Arguments, error},
 }
 
 define end-of-input: argot(unit) {
@@ -10,7 +10,8 @@ define end-of-input: argot(unit) {
     if eq-int(len, 0) {
       Right(Unit)
     } else {
-      Left(Unexpected-Input)
+      let orig-state = export-state(k) in
+      Left(Remaining-Arguments(orig-state))
     }
   }
 }
