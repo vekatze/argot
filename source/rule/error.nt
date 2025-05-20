@@ -3,19 +3,15 @@ import {
 }
 
 data error {
-| Argument-Missing(name: text)
 | Key-Missing(key: text)
 | Value-Missing(key: text)
 | Parse-Failure(key: text, value: text)
 | Remaining-Arguments(rest: list(text))
 | Unexpected-End-Of-Input
-| Key-Mismatch(expected: &text, found: &text)
 }
 
 define report(e: error): text {
   match e {
-  | Argument-Missing(name) =>
-    format("Missing argument: {}", [name])
   | Key-Missing(key) =>
     format("Missing key: {}", [key])
   | Value-Missing(key) =>
@@ -28,7 +24,5 @@ define report(e: error): text {
     ])
   | Unexpected-End-Of-Input =>
     *"Unexpected end of input"
-  | Key-Mismatch(_, _) =>
-    *"Key masmatch"
   }
 }
