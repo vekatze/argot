@@ -1,14 +1,20 @@
 import {
   core.bool.show,
   core.either {from-right},
+  core.environment {get-argv},
   core.int.show {show-int},
   core.list {for},
   core.show {Show},
   core.text.show {show-text},
-  this.combinator {many, optional},
-  this.error {report},
-  this.parser {argument-parser, parser, return, run},
-  this.preset {flag, int-required, text-required},
+  this.move.combinator {end-of-input, many, optional},
+  this.move.make-argot-kit {make-argot-kit},
+  this.move.preset {flag, int-required, text-required},
+  this.rule.argot {argot},
+  this.rule.error {report},
+}
+
+define main(): unit {
+  Unit
 }
 
 data config {
@@ -21,14 +27,15 @@ data config {
   )
 }
 
-define my-argument-parser(): parser(config) {
-  with argument-parser {
-    bind v1 = flag("-b") in
-    bind v2 = flag("-c") in
-    bind mv3 = optional(int-required("--integer")) in
-    bind mv4 = optional(text-required("--clang-option")) in
-    bind v5 = many(text-required("-i")) in
-    return(
+define my-argument-parser: argot(config) {
+  function (k) {
+    try v1 = flag("-b")(k) in
+    try v2 = flag("-c")(k) in
+    try mv3 = optional(int-required("--integer"))(k) in
+    try mv4 = optional(text-required("--clang-option"))(k) in
+    try v5 = many(text-required("-i"))(k) in
+    try _ = end-of-input(k) in
+    Right(
       Config of {
         v1,
         v2,
@@ -41,7 +48,8 @@ define my-argument-parser(): parser(config) {
 }
 
 define zen(): unit {
-  let result = run(my-argument-parser()) in
+  pin k = make-argot-kit(get-argv()) in
+  let result = my-argument-parser(k) in
   match result {
   | Left(e) =>
     printf("{}\n", [report(e)])
@@ -60,8 +68,4 @@ define zen(): unit {
       printf("{}\n", [t])
     })
   }
-}
-
-define main(): unit {
-  zen()
 }

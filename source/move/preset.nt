@@ -1,0 +1,53 @@
+import {
+  core.float.parse {parse-float},
+  core.int.parse {parse-int},
+  this.move.private.state {pop-head, pop-key, pop-key-value},
+  this.rule.argot {argot},
+  this.rule.error {Parse-Failure},
+}
+
+inline flag(key: &text): argot(bool) {
+  function (k) {
+    Right(pop-key(k, key))
+  }
+}
+
+inline int-required(key: &text): argot(int) {
+  function (k) {
+    try value = pop-key-value(k, key) in
+    let parse-result on value = parse-int(value) in
+    match parse-result {
+    | Left(_) =>
+      Left(Parse-Failure(*key, value))
+    | Right(v) =>
+      Right(v)
+    }
+  }
+}
+
+inline float-required(key: &text): argot(float) {
+  function (k) {
+    try value = pop-key-value(k, key) in
+    let parse-result on value = parse-float(value) in
+    match parse-result {
+    | Left(_) =>
+      Left(Parse-Failure(*key, value))
+    | Right(v) =>
+      Right(v)
+    }
+  }
+}
+
+inline text-required(key: &text): argot(text) {
+  function (k) {
+    try value = pop-key-value(k, key) in
+    Right(value)
+  }
+}
+
+inline text-argument: argot(text) {
+  function (k) {
+    try value = pop-head(k) in
+    Right(value)
+  }
+}

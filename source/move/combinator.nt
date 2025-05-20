@@ -1,0 +1,68 @@
+import {
+  this.move.private.state {export-state, get-num-of-items, import-state},
+  this.rule.argot {argot},
+  this.rule.error {Unexpected-Input, error},
+}
+
+define end-of-input: argot(unit) {
+  function (k) {
+    let len = get-num-of-items(k) in
+    if eq-int(len, 0) {
+      Right(Unit)
+    } else {
+      Left(Unexpected-Input)
+    }
+  }
+}
+
+inline attempt<a>(p: argot(a)): argot(a) {
+  function (k) {
+    let orig-state = export-state(k) in
+    match p(k) {
+    | Right(v) =>
+      Right(v)
+    | Left(e) =>
+      import-state(k, orig-state);
+      Left(e)
+    }
+  }
+}
+
+inline optional<a>(p: argot(a)): argot(?a) {
+  function (k) {
+    match attempt(p)(k) {
+    | Right(v) =>
+      Right(Right(v))
+    | Left(_) =>
+      Right(none)
+    }
+  }
+}
+
+inline many<a>(!p: argot(a)): argot(list(a)) {
+  function (k) {
+    let f =
+      define loop(): either(error, list(a)) {
+        match !p(k) {
+        | Left(_) =>
+          Right([])
+        | Right(v) =>
+          try vs = loop() in
+          Right(Cons(v, vs))
+        }
+      }
+    in
+    f()
+  }
+}
+
+inline branch<a>(p1: argot(a), p2: argot(a)): argot(a) {
+  function (k) {
+    match p1(k) {
+    | Right(v) =>
+      Right(v)
+    | Left(_) =>
+      p2(k)
+    }
+  }
+}

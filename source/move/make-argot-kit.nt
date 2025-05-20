@@ -1,0 +1,8 @@
+import {
+  this.rule.argot-kit {_Argot-Kit, argot-kit},
+}
+
+define make-argot-kit(xs: list(text)): argot-kit {
+  let input-ref = new-cell(xs) in
+  _Argot-Kit of {input-ref}
+}

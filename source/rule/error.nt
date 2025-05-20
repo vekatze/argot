@@ -8,6 +8,9 @@ data error {
 | Value-Missing(key: text)
 | Parse-Failure(key: text, value: text)
 | Remaining-Arguments(rest: list(text))
+| Unexpected-End-Of-Input
+| Unexpected-Input
+| Key-Mismatch(expected: &text, found: &text)
 }
 
 define report(e: error): text {
@@ -24,5 +27,11 @@ define report(e: error): text {
     format("Extra arguments: {}", [
       core.text.intercalate(rest, *", "),
     ])
+  | Unexpected-Input =>
+    *"Unexpected input"
+  | Unexpected-End-Of-Input =>
+    *"Unexpected end of input"
+  | Key-Mismatch(_, _) =>
+    *"Key masmatch"
   }
 }

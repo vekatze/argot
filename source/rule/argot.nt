@@ -1,0 +1,8 @@
+import {
+  this.rule.argot-kit {argot-kit},
+  this.rule.error {error},
+}
+
+inline argot(a) {
+  (k: &argot-kit) -> either(error, a)
+}

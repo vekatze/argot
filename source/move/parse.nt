@@ -1,0 +1,68 @@
+import {
+  core.environment {get-argv},
+  core.list {drop, length},
+  this.move.make-argot-kit {make-argot-kit},
+  this.rule.argot {argot},
+  this.rule.argot-kit {argot-kit},
+  this.rule.error {
+    Key-Mismatch,
+    Remaining-Arguments,
+    error,
+  },
+  this.util {split-at-key},
+}
+
+define end-of-input: argot(unit) {
+  admit
+}
+
+// inline piece(p: &text): argot(unit) {
+//   function (k) {
+//     try head-item = _read-head-item(k) in
+//     if eq-text(head-item, p) {
+//       _proceed(k, 1);
+//       Right(Unit)
+//     } else {
+//       Left(Key-Mismatch(p, head-item))
+//     }
+//   }
+// }
+// define _optional-body<a>(v: either(error, a)): either(error, ?a) {
+//   match v {
+//   | Right(result) =>
+//     Right(Right(result))
+//   | Left(_) =>
+//     Right(Left(Unit))
+//   }
+// }
+// inline optional<a>(p: argot(a)): argot(?a) {
+//   function (k) {
+//     _optional-body(p(k))
+//   }
+// }
+// inline branch<a>(p1: argot(a), p2: argot(a)): argot(a) {
+//   function (k) {
+//     match p1(k) {
+//     | Right(v) =>
+//       Right(v)
+//     | Left(_) =>
+//       p2(k)
+//     }
+//   }
+// }
+// inline many<a>(!p: argot(a)): argot(list(a)) {
+//   function (k) {
+//     let f =
+//       define self(): either(error, list(a)) {
+//         match !p(k) {
+//         | Right(v) =>
+//           try vs = self() in
+//           Right(Cons(v, vs))
+//         | Left(_) =>
+//           Right([])
+//         }
+//       }
+//     in
+//     f()
+//   }
+// }
