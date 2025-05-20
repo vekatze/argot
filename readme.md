@@ -1,6 +1,6 @@
 # argot
 
-`argot` is a monadic option parser for the [Neut](https://vekatze.github.io/neut/) programming language.
+`argot` is an option parser for the [Neut](https://vekatze.github.io/neut/) programming language.
 
 ## Installation
 
