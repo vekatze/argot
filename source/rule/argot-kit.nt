@@ -1,7 +1,3 @@
-import {
-  core.vector {vector},
-}
-
 data argot-kit {
 | _Argot-Kit(
     input-ref: cell(list(text)),

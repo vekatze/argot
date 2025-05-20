@@ -1,16 +1,14 @@
 import {
   core.c-size {from-c-size},
-  core.cell {borrow, mutate},
+  core.cell {borrow},
   core.external,
   core.foreign {THREAD_MUTEX_SIZE},
   core.list {append, span},
   core.magic,
   core.memory {load-int, store-int},
   core.pointer {shift},
-  core.vector {access},
   core.word,
   this.move.make-argot-kit {make-argot-kit},
-  this.rule.argot {argot},
   this.rule.argot-kit {_Argot-Kit, argot-kit},
   this.rule.error {Key-Missing, Unexpected-End-Of-Input, Value-Missing, error},
 }
@@ -28,23 +26,6 @@ inline modify<a, b>(ch: &cell(a), f: (a) -> pair(a, b)): b {
   core.external.thread-cond-signal(shift(ch, add-int(u, mutex-size)));
   core.external.thread-mutex-unlock(mutex-ptr);
   result
-}
-
-inline mutate-or-fail<a>(ch: &cell(a), f: (a) -> a): ?unit {
-  admit
-}
-
-define _get-args(k: &argot-kit): list(text) {
-  admit
-  // tie _Argot-Kit of {input} = k in
-  // let result =
-  //   mutate-or-fail(input, function (i) {
-  //     admit
-  //   })
-  // in
-  // borrow(input, function (i) {
-  //   admit
-  // })
 }
 
 define _break-at-key(xs: list(text), key: &text): pair(list(text), list(text)) {
@@ -120,8 +101,8 @@ define pop-head(k: &argot-kit): either(error, text) {
 
 define zen(): unit {
   pin k = make-argot-kit([*"foo", *"bar", *"buz", *"bar"]) in
-  let foo = pop-key(k, "bar") in
-  let foo = pop-key(k, "bar") in
-  let foo = pop-key(k, "bar") in
+  let _ = pop-key(k, "bar") in
+  let _ = pop-key(k, "bar") in
+  let _ = pop-key(k, "bar") in
   Unit
 }
