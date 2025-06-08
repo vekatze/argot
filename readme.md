@@ -102,12 +102,12 @@ data config {
 // defines an argument parser
 define my-argument-parser: argot(config) {
   function (k) {
-    try v1 = flag("-b")(k) in
-    try v2 = flag("-c")(k) in
-    try mv3 = optional(int-required("--integer"))(k) in
-    try mv4 = optional(text-required("--clang-option"))(k) in
-    try v5 = many(text-required("-i"))(k) in
-    try _ = end-of-input(k) in
+    try v1 = flag("-b")(k);
+    try v2 = flag("-c")(k);
+    try mv3 = optional(int-required("--integer"))(k);
+    try mv4 = optional(text-required("--clang-option"))(k);
+    try v5 = many(text-required("-i"))(k);
+    try _ = end-of-input(k);
     Right(
       Config of {
         v1,
@@ -122,13 +122,14 @@ define my-argument-parser: argot(config) {
 
 // tries the argument parser
 define zen(): unit {
-  pin k = make-argot-kit-from-argv() in
-  let result = my-argument-parser(k) in
+  pin k = make-argot-kit-from-argv();
+  let result = my-argument-parser(k);
   match result {
   | Left(e) =>
-    printf("{}\n", [report(e)])
+    pin e' = report(e);
+    print-line(e')
   | Right(v) =>
-    let Config of {v1, v2, v3, v4, v5} = v in
+    let Config of {v1, v2, v3, v4, v5} = v;
     (..)
   }
 }

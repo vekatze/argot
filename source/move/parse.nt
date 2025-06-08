@@ -6,11 +6,11 @@ import {
 
 define end-of-input: argot(unit) {
   function (k) {
-    let len = get-num-of-items(k) in
+    let len = get-num-of-items(k);
     if eq-int(len, 0) {
       Right(Unit)
     } else {
-      let orig-state = export-state(k) in
+      let orig-state = export-state(k);
       Left(Remaining-Arguments(orig-state))
     }
   }
@@ -18,7 +18,7 @@ define end-of-input: argot(unit) {
 
 inline attempt<a>(p: argot(a)): argot(a) {
   function (k) {
-    let orig-state = export-state(k) in
+    let orig-state = export-state(k);
     match p(k) {
     | Right(v) =>
       Right(v)
@@ -48,11 +48,10 @@ inline many<a>(!p: argot(a)): argot(list(a)) {
         | Left(_) =>
           Right([])
         | Right(v) =>
-          try vs = loop() in
+          try vs = loop();
           Right(Cons(v, vs))
         }
-      }
-    in
+      };
     f()
   }
 }

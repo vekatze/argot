@@ -1,19 +1,15 @@
 import {
   core.bool.show,
   core.either {from-right},
-  core.int.show {show-int},
+  core.int.io {print-int},
   core.list {for},
   core.show {Show},
-  core.text.show {show-text},
+  core.text.io {print-line},
   this.move.make-argot-kit {make-argot-kit-from-argv},
   this.move.parse {end-of-input, many, optional},
   this.move.preset {flag, int-required, text-required},
   this.rule.argot {argot},
   this.rule.error {report},
-}
-
-define main(): unit {
-  Unit
 }
 
 data config {
@@ -28,18 +24,18 @@ data config {
 
 define my-argument-parser: argot(config) {
   function (k) {
-    try v1 = flag("-b")(k) in
-    try v2 = flag("-c")(k) in
-    try mv3 = optional(int-required("--integer"))(k) in
-    try mv4 = optional(text-required("--clang-option"))(k) in
-    try v5 = many(text-required("-i"))(k) in
-    try _ = end-of-input(k) in
+    try v1 = flag("-b")(k);
+    try v2 = flag("-c")(k);
+    try mv3 = optional(int-required("--integer"))(k);
+    try mv4 = optional(text-required("--clang-option"))(k);
+    try v5 = many(text-required("-i"))(k);
+    try _ = end-of-input(k);
     Right(
       Config of {
         v1,
         v2,
-        v3 = from-right(mv3, 123),
-        v4 = from-right(mv4, *""),
+        v3 := from-right(mv3, 123),
+        v4 := from-right(mv4, *""),
         v5,
       },
     )
@@ -47,23 +43,34 @@ define my-argument-parser: argot(config) {
 }
 
 define zen(): unit {
-  pin k = make-argot-kit-from-argv() in
+  pin k = make-argot-kit-from-argv();
   match my-argument-parser(k) {
   | Left(e) =>
-    printf("{}\n", [report(e)])
+    pin e' = report(e);
+    print-line(e')
   | Right(v) =>
-    let Config of {v1, v2, v3, v4, v5} = v in
-    let Show of {show = !show} = core.bool.show.as-show in
+    let Config of {v1, v2, v3, v4, v5} = v;
+    let Show of {show := !show} = core.bool.show.as-show;
+    pin v1' = !show(v1);
+    pin v2' = !show(v2);
+    pin v4' = v4;
     print("right\n");
-    printf("v1: {}, v2: {}, v3: {}, v4: {}\n", [
-      !show(v1),
-      !show(v2),
-      show-int(v3),
-      show-text(v4),
-    ]);
+    print("v1: ");
+    print(v1');
+    print(", v2: ");
+    print(v2');
+    print(", v3: ");
+    print-int(v3);
+    print(", v4: ");
+    print-line(v4');
     print("v5:\n");
     for(v5, function (t) {
-      printf("{}\n", [t])
+      pin t = t;
+      print-line(t)
     })
   }
+}
+
+define main(): unit {
+  zen();
 }
