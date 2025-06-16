@@ -5,7 +5,7 @@
 ## Installation
 
 ```sh
-neut get argot https://github.com/vekatze/argot/raw/main/archive/0-1-27.tar.zst
+neut get argot https://github.com/vekatze/argot/raw/main/archive/0-1-28.tar.zst
 ```
 
 ## Types
