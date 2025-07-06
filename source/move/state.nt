@@ -67,7 +67,7 @@ define pop-head(k: &argot-kit): either(error, text) {
 }
 
 define zen(): unit {
-  pin k = make-argot-kit([*"foo", *"bar", *"buz", *"bar"]);
+  pin k = make-argot-kit(List[*"foo", *"bar", *"buz", *"bar"]);
   let _ = pop-key(k, "bar");
   let _ = pop-key(k, "bar");
   let _ = pop-key(k, "bar");

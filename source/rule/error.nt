@@ -13,13 +13,13 @@ data error {
 define report(e: error): text {
   match e {
   | Key-Missing(key) =>
-    format("Missing key: {}", [key])
+    format("Missing key: {}", List[key])
   | Value-Missing(key) =>
-    format("Missing value for key: {}", [key])
+    format("Missing value for key: {}", List[key])
   | Parse-Failure(key, value) =>
-    format("Could not parse `{}` at `{}`", [value, key])
+    format("Could not parse `{}` at `{}`", List[value, key])
   | Remaining-Arguments(rest) =>
-    format("Extra arguments: {}", [
+    format("Extra arguments: {}", List[
       core.text.intercalate(rest, *" "),
     ])
   | Unexpected-End-Of-Input =>

@@ -46,7 +46,7 @@ inline many<a>(!p: argot(a)): argot(list(a)) {
       define loop(): either(error, list(a)) {
         match !p(k) {
         | Left(_) =>
-          Right([])
+          Right(Nil)
         | Right(v) =>
           try vs = loop();
           Right(Cons(v, vs))
