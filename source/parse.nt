@@ -1,7 +1,7 @@
 import {
-  this.move.state {export-state, get-num-of-items, import-state},
-  this.rule.argot {argot},
-  this.rule.error {Remaining-Arguments, error},
+  this.argot {argot},
+  this.error {Remaining-Arguments, error},
+  this.state {export-state, get-num-of-items, import-state},
 }
 
 define end-of-input: argot(unit) {

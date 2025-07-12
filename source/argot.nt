@@ -1,6 +1,6 @@
 import {
-  this.rule.argot-kit {argot-kit},
-  this.rule.error {error},
+  this.argot-kit {argot-kit},
+  this.error {error},
 }
 
 inline argot(a) {

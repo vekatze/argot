@@ -5,11 +5,11 @@ import {
   core.list {for},
   core.show {Show},
   core.text.io {print-line},
-  this.move.make-argot-kit {make-argot-kit-from-argv},
-  this.move.parse {end-of-input, many, optional},
-  this.move.preset {flag, int-required, text-required},
-  this.rule.argot {argot},
-  this.rule.error {report},
+  this.argot {argot},
+  this.error {report},
+  this.make-argot-kit {make-argot-kit-from-argv},
+  this.parse {end-of-input, many, optional},
+  this.preset {flag, int-required, text-required},
 }
 
 data config {

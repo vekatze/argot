@@ -1,7 +1,7 @@
 import {
   core.environment {get-argv},
   core.list {drop},
-  this.rule.argot-kit {_Argot-Kit, argot-kit},
+  this.argot-kit {_Argot-Kit, argot-kit},
 }
 
 define make-argot-kit(xs: list(text)): argot-kit {

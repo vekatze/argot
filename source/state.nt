@@ -1,10 +1,10 @@
 import {
   core.cell {borrow},
   core.list {append},
-  this.move.make-argot-kit {make-argot-kit},
-  this.move.private.util {_break-at-key, _modify},
-  this.rule.argot-kit {_Argot-Kit, argot-kit},
-  this.rule.error {Key-Missing, Unexpected-End-Of-Input, Value-Missing, error},
+  this.argot-kit {_Argot-Kit, argot-kit},
+  this.error {Key-Missing, Unexpected-End-Of-Input, Value-Missing, error},
+  this.make-argot-kit {make-argot-kit},
+  this.private.util {_break-at-key, _modify},
 }
 
 define get-num-of-items(k: &argot-kit): int {
