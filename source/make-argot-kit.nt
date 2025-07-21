@@ -1,11 +1,12 @@
 import {
+  core.cell {make-cell},
   core.environment {get-argv},
   core.list {drop},
   this.argot-kit {_Argot-Kit, argot-kit},
 }
 
 define make-argot-kit(xs: list(text)): argot-kit {
-  let input-ref = make-cell(xs);
+  let input-ref = make-cell(quote {xs});
   _Argot-Kit of {input-ref}
 }
 
