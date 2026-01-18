@@ -46,23 +46,23 @@ define zen(): unit {
   pin k = make-argot-kit-from-argv();
   match my-argument-parser(k) {
   | Left(e) =>
-    pin e' = report(e);
-    print-line(e')
+    pin message = report(e);
+    print-line(message)
   | Right(v) =>
     let Config of {v1, v2, v3, v4, v5} = v;
     let Show of {show := !show} = core.bool.show.as-show;
-    pin v1' = !show(v1);
-    pin v2' = !show(v2);
-    pin v4' = v4;
+    pin v1-txt = !show(v1);
+    pin v2-txt = !show(v2);
+    pin v4-txt = v4;
     print("right\n");
     print("v1: ");
-    print(v1');
+    print(v1-txt);
     print(", v2: ");
-    print(v2');
+    print(v2-txt);
     print(", v3: ");
     print-int(v3);
     print(", v4: ");
-    print-line(v4');
+    print-line(v4-txt);
     print("v5:\n");
     for(v5, function (t) {
       pin t = t;

@@ -3,6 +3,6 @@ import {
   this.error {error},
 }
 
-inline argot(a) {
+alias argot(a) {
   (k: &argot-kit) -> either(error, a)
 }

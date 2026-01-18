@@ -10,7 +10,7 @@ import {
 define get-num-of-items(k: &argot-kit): int {
   tie _Argot-Kit of {input-ref} = k;
   borrow(input-ref, function (xs) {
-    quote {core.list.length(xs)}
+    lift {core.list.length(xs)}
   })
 }
 
@@ -22,7 +22,7 @@ define export-state(k: &argot-kit): list(text) {
 define import-state(k: &argot-kit, xs: list(text)): unit {
   tie _Argot-Kit of {input-ref} = k;
   core.cell.mutate(input-ref, function (_) {
-    quote {xs}
+    lift {xs}
   })
 }
 
