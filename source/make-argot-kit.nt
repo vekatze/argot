@@ -7,7 +7,7 @@ import {
 
 define make-argot-kit(xs: list(text)): argot-kit {
   let input-ref = make-cell(lift {xs});
-  _Argot-Kit of {input-ref}
+  _Argot-Kit{input-ref}
 }
 
 define make-argot-kit-from-argv(): argot-kit {

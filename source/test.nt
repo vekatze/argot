@@ -31,7 +31,7 @@ define my-argument-parser: argot(config) {
     try v5 = many(text-required("-i"))(k);
     try _ = end-of-input(k);
     Right(
-      Config of {
+      Config{
         v1,
         v2,
         v3 := from-right(mv3, 123),
@@ -49,10 +49,10 @@ define zen(): unit {
     pin message = report(e);
     print-line(message)
   | Right(v) =>
-    let Config of {v1, v2, v3, v4, v5} = v;
-    let Show of {show := !show} = core.bool.show.as-show;
-    pin v1-txt = !show(v1);
-    pin v2-txt = !show(v2);
+    let Config{v1, v2, v3, v4, v5} = v;
+    let Show{show := !show} = core.bool.show.as-show;
+    pin v1-txt = show(v1);
+    pin v2-txt = show(v2);
     pin v4-txt = v4;
     print("right\n");
     print("v1: ");

@@ -44,7 +44,7 @@ inline many<a>(!p: argot(a)): argot(list(a)) {
   function (k) {
     let f =
       define loop(): either(error, list(a)) {
-        match !p(k) {
+        match p(k) {
         | Left(_) =>
           Right(Nil)
         | Right(v) =>
