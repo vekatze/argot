@@ -6,13 +6,13 @@ import {
   this.state {pop-head, pop-key, pop-key-value},
 }
 
-inline flag(key: &text): argot(bool) {
+inline flag(key: &text) -> argot(bool) {
   function (k) {
     Right(pop-key(k, key))
   }
 }
 
-inline int-required(key: &text): argot(int) {
+inline int-required(key: &text) -> argot(int) {
   function (k) {
     try value = pop-key-value(k, key);
     let parse-result on value = parse-int(value);
@@ -25,7 +25,7 @@ inline int-required(key: &text): argot(int) {
   }
 }
 
-inline float-required(key: &text): argot(float) {
+inline float-required(key: &text) -> argot(float) {
   function (k) {
     try value = pop-key-value(k, key);
     let parse-result on value = parse-float(value);
@@ -38,14 +38,14 @@ inline float-required(key: &text): argot(float) {
   }
 }
 
-inline text-required(key: &text): argot(text) {
+inline text-required(key: &text) -> argot(text) {
   function (k) {
     try value = pop-key-value(k, key);
     Right(value)
   }
 }
 
-inline text-argument: argot(text) {
+constant text-argument: argot(text) {
   function (k) {
     try value = pop-head(k);
     Right(value)

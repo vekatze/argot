@@ -22,7 +22,7 @@ data config {
   )
 }
 
-define my-argument-parser: argot(config) {
+constant my-argument-parser: argot(config) {
   function (k) {
     try v1 = flag("-b")(k);
     try v2 = flag("-c")(k);
@@ -42,7 +42,7 @@ define my-argument-parser: argot(config) {
   }
 }
 
-define zen(): unit {
+define zen() -> unit {
   pin k = make-argot-kit-from-argv();
   match my-argument-parser(k) {
   | Left(e) =>
@@ -71,6 +71,6 @@ define zen(): unit {
   }
 }
 
-define main(): unit {
+define main() -> unit {
   zen();
 }

@@ -10,7 +10,7 @@ data error {
 | Unexpected-End-Of-Input
 }
 
-define report(e: error): text {
+define report(e: error) -> text {
   match e {
   | Key-Missing(key) =>
     format("Missing key: {}", List[key])

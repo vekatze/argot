@@ -9,7 +9,7 @@ import {
   core.word,
 }
 
-inline _modify<a, b>(ch: &cell(a), f: (a) -> pair(a, b)): b {
+inline _modify<a, b>(ch: &cell(a), f: (a) -> pair(a, b)) -> b {
   let ch = core.magic.cast<&cell(a), pointer>(ch);
   let u = core.word.size;
   let mutex-ptr = shift(ch, u);
@@ -24,7 +24,7 @@ inline _modify<a, b>(ch: &cell(a), f: (a) -> pair(a, b)): b {
   result
 }
 
-define _break-at-key(xs: list(text), key: &text): pair(list(text), list(text)) {
+define _break-at-key(xs: list(text), key: &text) -> pair(list(text), list(text)) {
   span(xs, function (x) {
     ne-text(x, key)
   })
