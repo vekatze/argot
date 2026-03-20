@@ -7,13 +7,13 @@ import {
 }
 
 inline flag(key: &text) -> argot(bool) {
-  function (k) {
+  (k) => {
     Right(pop-key(k, key))
   }
 }
 
 inline int-required(key: &text) -> argot(int) {
-  function (k) {
+  (k) => {
     try value = pop-key-value(k, key);
     let parse-result on value = parse-int(value);
     match parse-result {
@@ -26,7 +26,7 @@ inline int-required(key: &text) -> argot(int) {
 }
 
 inline float-required(key: &text) -> argot(float) {
-  function (k) {
+  (k) => {
     try value = pop-key-value(k, key);
     let parse-result on value = parse-float(value);
     match parse-result {
@@ -39,14 +39,14 @@ inline float-required(key: &text) -> argot(float) {
 }
 
 inline text-required(key: &text) -> argot(text) {
-  function (k) {
+  (k) => {
     try value = pop-key-value(k, key);
     Right(value)
   }
 }
 
 constant text-argument: argot(text) {
-  function (k) {
+  (k) => {
     try value = pop-head(k);
     Right(value)
   }

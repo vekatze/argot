@@ -23,7 +23,7 @@ data config {
 }
 
 constant my-argument-parser: argot(config) {
-  function (k) {
+  (k) => {
     try v1 = flag("-b")(k);
     try v2 = flag("-c")(k);
     try mv3 = optional(int-required("--integer"))(k);
@@ -31,7 +31,7 @@ constant my-argument-parser: argot(config) {
     try v5 = many(text-required("-i"))(k);
     try _ = end-of-input(k);
     Right(
-      Config{
+      Config {
         v1,
         v2,
         v3 := from-right(mv3, 123),
@@ -49,8 +49,8 @@ define zen() -> unit {
     pin message = report(e);
     print-line(message)
   | Right(v) =>
-    let Config{v1, v2, v3, v4, v5} = v;
-    let Show{show := !show} = core.bool.show.as-show;
+    let Config {v1, v2, v3, v4, v5} = v;
+    let Show {show := !show} = core.bool.show.as-show;
     pin v1-txt = show(v1);
     pin v2-txt = show(v2);
     pin v4-txt = v4;
@@ -64,7 +64,7 @@ define zen() -> unit {
     print(", v4: ");
     print-line(v4-txt);
     print("v5:\n");
-    for(v5, function (t) {
+    for(v5, (t) => {
       pin t = t;
       print-line(t)
     })

@@ -8,27 +8,27 @@ import {
 }
 
 define get-num-of-items(k: &argot-kit) -> int {
-  tie _Argot-Kit{input-ref} = k;
-  borrow(input-ref, function (xs) {
+  tie _Argot-Kit {input-ref} = k;
+  borrow(input-ref, (xs) => {
     lift {core.list.length(xs)}
   })
 }
 
 define export-state(k: &argot-kit) -> list(text) {
-  tie _Argot-Kit{input-ref} = k;
+  tie _Argot-Kit {input-ref} = k;
   core.cell.clone(input-ref)
 }
 
 define import-state(k: &argot-kit, xs: list(text)) -> unit {
-  tie _Argot-Kit{input-ref} = k;
-  core.cell.mutate(input-ref, function (_) {
+  tie _Argot-Kit {input-ref} = k;
+  core.cell.mutate(input-ref, (_) => {
     lift {xs}
   })
 }
 
 define pop-key(k: &argot-kit, key: &text) -> bool {
-  tie _Argot-Kit{input-ref} = k;
-  _modify(input-ref, function (input) {
+  tie _Argot-Kit {input-ref} = k;
+  _modify(input-ref, (input) => {
     let Pair(ys, zs) = _break-at-key(input, key);
     match zs {
     | Nil =>
@@ -40,8 +40,8 @@ define pop-key(k: &argot-kit, key: &text) -> bool {
 }
 
 define pop-key-value(k: &argot-kit, key: &text) -> either(error, text) {
-  tie _Argot-Kit{input-ref} = k;
-  _modify(input-ref, function (input) {
+  tie _Argot-Kit {input-ref} = k;
+  _modify(input-ref, (input) => {
     let Pair(ys, zs) = _break-at-key(input, key);
     match zs {
     | Cons(_, Cons(z2, rest)) =>
@@ -55,8 +55,8 @@ define pop-key-value(k: &argot-kit, key: &text) -> either(error, text) {
 }
 
 define pop-head(k: &argot-kit) -> either(error, text) {
-  tie _Argot-Kit{input-ref} = k;
-  _modify(input-ref, function (input) {
+  tie _Argot-Kit {input-ref} = k;
+  _modify(input-ref, (input) => {
     match input {
     | Nil =>
       Pair(Nil, Left(Unexpected-End-Of-Input))

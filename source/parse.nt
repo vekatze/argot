@@ -5,7 +5,7 @@ import {
 }
 
 constant end-of-input: argot(unit) {
-  function (k) {
+  (k) => {
     let len = get-num-of-items(k);
     if eq-int(len, 0) {
       Right(Unit)
@@ -17,7 +17,7 @@ constant end-of-input: argot(unit) {
 }
 
 inline attempt<a>(p: argot(a)) -> argot(a) {
-  function (k) {
+  (k) => {
     let orig-state = export-state(k);
     match p(k) {
     | Right(v) =>
@@ -30,7 +30,7 @@ inline attempt<a>(p: argot(a)) -> argot(a) {
 }
 
 inline optional<a>(p: argot(a)) -> argot(?a) {
-  function (k) {
+  (k) => {
     match attempt(p)(k) {
     | Right(v) =>
       Right(Right(v))
@@ -41,7 +41,7 @@ inline optional<a>(p: argot(a)) -> argot(?a) {
 }
 
 inline many<a>(!p: argot(a)) -> argot(list(a)) {
-  function (k) {
+  (k) => {
     let f =
       define loop() -> either(error, list(a)) {
         match p(k) {
@@ -57,7 +57,7 @@ inline many<a>(!p: argot(a)) -> argot(list(a)) {
 }
 
 inline branch<a>(p1: argot(a), p2: argot(a)) -> argot(a) {
-  function (k) {
+  (k) => {
     match p1(k) {
     | Right(v) =>
       Right(v)
