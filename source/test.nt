@@ -4,12 +4,12 @@ import {
   core.int.io {print-int},
   core.list {for},
   core.show {Show},
-  core.text.io {print-line},
+  core.string.io {print-line},
   this.argot {argot},
   this.error {report},
   this.make-argot-kit {make-argot-kit-from-argv},
   this.parse {end-of-input, many, optional},
-  this.preset {flag, int-required, text-required},
+  this.preset {flag, int-required, string-required},
 }
 
 data config {
@@ -17,8 +17,8 @@ data config {
     v1: bool,
     v2: bool,
     v3: int,
-    v4: text,
-    v5: list(text),
+    v4: string,
+    v5: list(string),
   )
 }
 
@@ -27,8 +27,8 @@ constant my-argument-parser: argot(config) {
     try v1 = flag("-b")(k);
     try v2 = flag("-c")(k);
     try mv3 = optional(int-required("--integer"))(k);
-    try mv4 = optional(text-required("--clang-option"))(k);
-    try v5 = many(text-required("-i"))(k);
+    try mv4 = optional(string-required("--clang-option"))(k);
+    try v5 = many(string-required("-i"))(k);
     try _ = end-of-input(k);
     Right(
       Config {

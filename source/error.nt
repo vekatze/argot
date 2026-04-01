@@ -1,16 +1,16 @@
 import {
-  core.text {format},
+  core.string {format},
 }
 
 data error {
-| Key-Missing(key: text)
-| Value-Missing(key: text)
-| Parse-Failure(key: text, value: text)
-| Remaining-Arguments(rest: list(text))
+| Key-Missing(key: string)
+| Value-Missing(key: string)
+| Parse-Failure(key: string, value: string)
+| Remaining-Arguments(rest: list(string))
 | Unexpected-End-Of-Input
 }
 
-define report(e: error) -> text {
+define report(e: error) -> string {
   match e {
   | Key-Missing(key) =>
     format("Missing key: {}", List[key])
@@ -20,7 +20,7 @@ define report(e: error) -> text {
     format("Could not parse `{}` at `{}`", List[value, key])
   | Remaining-Arguments(rest) =>
     format("Extra arguments: {}", List[
-      core.text.intercalate(rest, *" "),
+      core.string.intercalate(rest, *" "),
     ])
   | Unexpected-End-Of-Input =>
     *"Unexpected end of input"

@@ -24,8 +24,8 @@ inline _modify<a, b>(ch: &cell(a), f: (a) -> pair(a, b)) -> b {
   result
 }
 
-define _break-at-key(xs: list(text), key: &text) -> pair(list(text), list(text)) {
+define _break-at-key(xs: list(string), key: &string) -> pair(list(string), list(string)) {
   span(xs, (x) => {
-    ne-text(x, key)
+    ne-string(x, key)
   })
 }
