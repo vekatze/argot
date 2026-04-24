@@ -5,7 +5,7 @@
 ## Installation
 
 ```sh
-neut get argot https://github.com/vekatze/argot/raw/main/archive/0-1-38.tar.zst
+neut get argot https://github.com/vekatze/argot/raw/main/archive/0-1-48.tar.zst
 ```
 
 ## Types
@@ -17,103 +17,123 @@ neut get argot https://github.com/vekatze/argot/raw/main/archive/0-1-38.tar.zst
 data argot-kit
 
 // creates an `argot-kit`
-define make-argot-kit(args: list(text)): argot-kit
+define make-argot-kit(args: list(string)) -> argot-kit
 
 // creates an `argot-kit` from argv
-define make-argot-kit-from-argv(): argot-kit
+define make-argot-kit-from-argv() -> argot-kit
 
 // the type of parsers
-inline argot(a) {
+alias argot(a) {
   (k: &argot-kit) -> either(error, a)
 }
 
 // convert an error to human-readable text
-define report(e: error): text
+define report(e: error) -> string
 ```
 
 ### Parsers
 
 ```neut
 // makes given parser optional
-define optional<a>(p: argot(a)): argot(?a)
+inline optional<a>(p: argot(a)) -> argot(?a)
 
 // runs given parser repeatedly until it fails
-inline many<a>(p: argot(a)): argot(list(a))
+inline many<a>(!p: argot(a)) -> argot(list(a))
 
-// tries given parsers one by one
-define choice<a>(ps: list(argot(a)), fallback: argot(a)): argot(a)
+// `attempt(p)` is the same as `p` if `p` succeeds
+// `attempt(p)` rewinds the input state if `p` fails
+inline attempt<a>(p: argot(a)) -> argot(a)
+
+// executes `p1`; if it fails, executes `p2`
+// note that `branch(p1, p2)` does not rewind the input state automatically
+inline branch<a>(p1: argot(a), p2: argot(a)) -> argot(a)
 
 // succeeds only if there are no remaining arguments
-define end-of-input: argot(unit)
+constant end-of-input: argot(unit)
 ```
 
 ### Presets
 
 ```neut
 // parses a flag (`--enable-color`)
-define flag(key: &text): argot(bool)
+inline flag(key: &string) -> argot(bool)
 
 // parses an integer (`--my-key 1234`)
-define int-required(key: &text): argot(int)
+inline int-required(key: &string) -> argot(int)
 
 // parses a float (`--my-key 23.45`)
-define float-required(key: &text): argot(float)
+inline float-required(key: &string) -> argot(float)
 
-// parses a text (`--clang-option "-fsanitize=address"`)
-define text-required(key: &text): argot(text)
+// parses a string (`--clang-option "-fsanitize=address"`)
+inline string-required(key: &string) -> argot(string)
 
 // parses a positional argument (the `foo` in `my-command foo`)
-define text-argument(name: &text): argot(text)
+constant string-argument: argot(string)
 ```
 
 ### Utilities
 
 ```neut
-define get-num-of-items(k: &argot-kit): int
+// gets the number of remaining arguments
+define get-num-of-items(k: &argot-kit) -> int
 
-define export-state(k: &argot-kit): list(text)
+// exports the current parser state
+define export-state(k: &argot-kit) -> list(string)
 
-define import-state(k: &argot-kit, xs: list(text)): unit
+// replaces the current parser state with `xs`
+define import-state(k: &argot-kit, xs: list(string)) -> unit
 
-// state == ["foo", "bar", "buz", "qux"]
+// state == ["foo", "bar", "baz", "qux"]
 // ↓ pop-key(k, "bar")
-// state == ["foo", "buz", "qux"], output == True
-define pop-key(k: &argot-kit, key: &text): bool
+// state == ["foo", "baz", "qux"], output == True
+define pop-key(k: &argot-kit, key: &string) -> bool
 
-// state == ["foo", "bar", "buz", "qux"]
+// state == ["foo", "bar", "baz", "qux"]
 // ↓ pop-key-value(k, "bar")
-// state == ["foo", "qux"], output == Right("buz")
-define pop-key-value(k: &argot-kit, key: &text): either(error, text)
+// state == ["foo", "qux"], output == Right("baz")
+define pop-key-value(k: &argot-kit, key: &string) -> either(error, string)
 
-// state == ["foo", "bar", "buz", "qux"]
+// state == ["foo", "bar", "baz", "qux"]
 // ↓ pop-head(k)
-// state == ["bar", "buz", "qux"], output == Right("bar")
-define pop-head(k: &argot-kit): either(error, text)
+// state == ["bar", "baz", "qux"], output == Right("foo")
+define pop-head(k: &argot-kit) -> either(error, string)
 ```
 
 ## Example
 
 ```neut
+import {
+  core.either {from-right},
+  core.int.io {print-int},
+  core.list {for},
+  core.string.io {print-line},
+  this.argot {argot},
+  this.error {report},
+  this.make-argot-kit {make-argot-kit-from-argv},
+  this.parse {end-of-input, many, optional},
+  this.preset {flag, int-required, string-required},
+}
+
 // defines a type that stores the result of argument parsing
 data config {
-| Config(v1: bool, v2: bool, v3: int, v4: text, v5: list(text))
+| Config(v1: bool, v2: bool, v3: int, v4: string, v5: list(string))
 }
 
 // defines an argument parser
-define my-argument-parser: argot(config) {
-  function (k) {
+constant my-argument-parser: argot(config) {
+  (k) => {
     try v1 = flag("-b")(k);
     try v2 = flag("-c")(k);
     try mv3 = optional(int-required("--integer"))(k);
-    try mv4 = optional(text-required("--clang-option"))(k);
-    try v5 = many(text-required("-i"))(k);
+    try mv4 = optional(string-required("--clang-option"))(k);
+    try v5 = many(string-required("-i"))(k);
     try _ = end-of-input(k);
     Right(
-      Config of {
+      Config{
         v1,
         v2,
-        v3 = from-right(mv3, 123),
-        v4 = from-right(mv4, *""),
+        v3 := from-right(mv3, 123),
+        v4 := from-right(mv4, *""),
         v5,
       },
     )
@@ -121,22 +141,31 @@ define my-argument-parser: argot(config) {
 }
 
 // tries the argument parser
-define zen(): unit {
+define zen() -> unit {
   pin k = make-argot-kit-from-argv();
-  let result = my-argument-parser(k);
-  match result {
+  match my-argument-parser(k) {
   | Left(e) =>
-    pin e' = report(e);
-    print-line(e')
+    pin message = report(e);
+    print-line(message)
   | Right(v) =>
-    let Config of {v1, v2, v3, v4, v5} = v;
-    (..)
+    let Config{v1, v2, v3, v4, v5} = v;
+    let _ = v1;
+    let _ = v2;
+    let _ = v4;
+    print("right\n");
+    print("v3: ");
+    print-int(v3);
+    print("\nv5:\n");
+    for(v5, (t) => {
+      pin t = t;
+      print-line(t)
+    })
   }
 }
 ```
 
 The parser `my-argument-parser()` can handle arguments like the following:
 
-```
+```text
 -b --integer 123 -i test -i hoge
 ```
