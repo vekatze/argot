@@ -3,11 +3,9 @@ import {
   core.either {from-right},
   core.int.io {print-int},
   core.list {for},
-  core.show {Show},
-  core.string.io {print-line},
   this.argot {argot},
+  this.argot-kit {make-argot-kit-from-argv},
   this.error {report},
-  this.make-argot-kit {make-argot-kit-from-argv},
   this.parse {end-of-input, many, optional},
   this.preset {flag, int-required, string-required},
 }
@@ -50,7 +48,9 @@ define zen() -> unit {
     print-line(message)
   | Right(v) =>
     let Config{v1, v2, v3, v4, v5} = v;
-    let Show{show := !show} = core.bool.show.as-show;
+    let Show{render := !show} = core.bool.show.as-show;
+    pin v1 = v1;
+    pin v2 = v2;
     pin v1-txt = show(v1);
     pin v2-txt = show(v2);
     pin v4-txt = v4;

@@ -1,10 +1,15 @@
 import {
-  core.cell {borrow},
-  core.list {append},
+  core.box {axiom-T},
+  core.list {append, span},
+  core.sync.cell {borrow, modify},
   this.argot-kit {_Argot-Kit, argot-kit},
   this.error {Key-Missing, Unexpected-End-Of-Input, Value-Missing, error},
-  this.make-argot-kit {make-argot-kit},
-  this.private.util {_break-at-key, _modify},
+}
+
+define _break-at-key(xs: list(string), key: &string) -> pair(list(string), list(string)) {
+  span(xs, (x) => {
+    ne-string(x, key)
+  })
 }
 
 define get-num-of-items(k: &argot-kit) -> int {
@@ -16,60 +21,55 @@ define get-num-of-items(k: &argot-kit) -> int {
 
 define export-state(k: &argot-kit) -> list(string) {
   tie _Argot-Kit{input-ref} = k;
-  core.cell.clone(input-ref)
+  core.sync.cell.clone(input-ref)
 }
 
 define import-state(k: &argot-kit, xs: list(string)) -> unit {
   tie _Argot-Kit{input-ref} = k;
-  core.cell.mutate(input-ref, (_) => {
+  core.sync.cell.mutate(input-ref, (_) => {
     lift {xs}
   })
 }
 
 define pop-key(k: &argot-kit, key: &string) -> bool {
   tie _Argot-Kit{input-ref} = k;
-  _modify(input-ref, (input) => {
+  core.sync.cell.modify(input-ref, (input) => {
+    let input = axiom-T(input);
     let Pair(ys, zs) = _break-at-key(input, key);
     match zs {
     | Nil =>
-      Pair(ys, False)
+      Pair(lift {ys}, False)
     | Cons(_, rest) =>
-      Pair(append(ys, rest), True)
+      Pair(lift {append(ys, rest)}, True)
     }
   })
 }
 
 define pop-key-value(k: &argot-kit, key: &string) -> either(error, string) {
   tie _Argot-Kit{input-ref} = k;
-  _modify(input-ref, (input) => {
+  modify(input-ref, (input) => {
+    let input = axiom-T(input);
     let Pair(ys, zs) = _break-at-key(input, key);
     match zs {
     | Cons(_, Cons(z2, rest)) =>
-      Pair(append(ys, rest), Right(z2))
+      Pair(lift {append(ys, rest)}, Right(z2))
     | Cons(z, Nil) =>
-      Pair(append(ys, Cons(z, Nil)), Left(Value-Missing(*key)))
+      Pair(lift {append(ys, Cons(z, Nil))}, Left(Value-Missing(*key)))
     | zs =>
-      Pair(append(ys, zs), Left(Key-Missing(*key)))
+      Pair(lift {append(ys, zs)}, Left(Key-Missing(*key)))
     }
   })
 }
 
 define pop-head(k: &argot-kit) -> either(error, string) {
   tie _Argot-Kit{input-ref} = k;
-  _modify(input-ref, (input) => {
+  modify(input-ref, (input) => {
+    let input = axiom-T(input);
     match input {
     | Nil =>
-      Pair(Nil, Left(Unexpected-End-Of-Input))
+      Pair(lift {Nil}, Left(Unexpected-End-Of-Input))
     | Cons(x, xs) =>
-      Pair(xs, Right(x))
+      Pair(lift {xs}, Right(x))
     }
   })
-}
-
-define zen() -> unit {
-  pin k = make-argot-kit(List[*"foo", *"bar", *"buz", *"bar"]);
-  let _ = pop-key(k, "bar");
-  let _ = pop-key(k, "bar");
-  let _ = pop-key(k, "bar");
-  Unit
 }

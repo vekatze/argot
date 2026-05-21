@@ -1,5 +1,20 @@
+import {
+  core.list {drop},
+  core.process {get-argv},
+  core.sync.cell {cell, make-cell},
+}
+
 data argot-kit {
 | _Argot-Kit(
     input-ref: cell(list(string)),
   )
+}
+
+define make-argot-kit(xs: list(string)) -> argot-kit {
+  let input-ref = make-cell(lift {xs});
+  _Argot-Kit{input-ref}
+}
+
+define make-argot-kit-from-argv() -> argot-kit {
+  make-argot-kit(drop(get-argv(), 1))
 }
