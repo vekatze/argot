@@ -5,7 +5,7 @@
 ## Installation
 
 ```sh
-neut get argot https://github.com/vekatze/argot/raw/main/archive/0-1-48.tar.zst
+neut get argot https://github.com/vekatze/argot/raw/main/archive/0-1-49.tar.zst
 ```
 
 ## Types
@@ -106,13 +106,13 @@ import {
   core.either {from-right},
   core.int.io {print-int},
   core.list {for},
-  core.string.io {print-line},
   this.argot {argot},
+  this.argot-kit {make-argot-kit-from-argv},
   this.error {report},
-  this.make-argot-kit {make-argot-kit-from-argv},
   this.parse {end-of-input, many, optional},
   this.preset {flag, int-required, string-required},
 }
+
 
 // defines a type that stores the result of argument parsing
 data config {
