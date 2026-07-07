@@ -1,10 +1,10 @@
 import {
-  this.argot-kit {make-argot-kit},
-  this.argot-kit.state {pop-key},
+  argot-kit {make-argot-kit},
+  argot-kit.state {pop-key},
 }
 
 define zen() -> unit {
-  pin k = make-argot-kit(List[*"foo", *"bar", *"buz", *"bar"]);
+  pin k = make-argot-kit(List::[*"foo", *"bar", *"buz", *"bar"]);
   let _ = pop-key(k, "bar");
   let _ = pop-key(k, "bar");
   let _ = pop-key(k, "bar");

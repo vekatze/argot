@@ -1,6 +1,6 @@
 import {
-  this.argot-kit {argot-kit},
-  this.error {error},
+  argot-kit {argot-kit},
+  error {error},
 }
 
 alias argot(a) {

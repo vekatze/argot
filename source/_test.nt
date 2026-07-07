@@ -1,13 +1,13 @@
 import {
-  core.bool.show,
-  core.either {from-right},
-  core.int.io {print-int},
-  core.list {for},
-  this.argot {argot},
-  this.argot-kit {make-argot-kit-from-argv},
-  this.error {report},
-  this.parse {end-of-input, many, optional},
-  this.preset {flag, int-required, string-required},
+  core::bool.show,
+  core::either {from-right},
+  core::int.io {print-int},
+  core::list {for},
+  argot {argot},
+  argot-kit {make-argot-kit-from-argv},
+  error {report},
+  parse {end-of-input, many, optional},
+  preset {flag, int-required, string-required},
 }
 
 data config {
@@ -48,7 +48,7 @@ define zen() -> unit {
     print-line(message)
   | Right(v) =>
     let Config{v1, v2, v3, v4, v5} = v;
-    let Show{render := !show} = core.bool.show.as-show;
+    let Show{render := !show} = core::bool.show.as-show;
     pin v1 = v1;
     pin v2 = v2;
     pin v1-txt = show(v1);

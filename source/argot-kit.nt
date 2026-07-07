@@ -1,7 +1,7 @@
 import {
-  core.list {drop},
-  core.process {get-argv},
-  core.sync.cell {cell, make-cell},
+  core::list {drop},
+  core::process {get-argv},
+  core::sync.cell {cell, make-cell},
 }
 
 data argot-kit {
