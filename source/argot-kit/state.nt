@@ -1,5 +1,5 @@
 import {
-  core::box {axiom-T},
+  core::layer {axiom-T},
   core::list {append, span},
   core::sync.cell {borrow, modify},
   argot-kit {_Argot-Kit, argot-kit},
