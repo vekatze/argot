@@ -2,8 +2,8 @@ import {
   core::layer {axiom-T},
   core::list {append, span},
   core::sync.cell {borrow, modify},
-  argot-kit {_Argot-Kit, argot-kit},
-  error {Key-Missing, Unexpected-End-Of-Input, Value-Missing, error},
+  this::argot-kit {_Argot-Kit, argot-kit},
+  this::error {Key-Missing, Unexpected-End-Of-Input, Value-Missing, error},
 }
 
 define _break-at-key(xs: list(string), key: &string) -> pair(list(string), list(string)) {
@@ -15,25 +15,25 @@ define _break-at-key(xs: list(string), key: &string) -> pair(list(string), list(
 define get-num-of-items(k: &argot-kit) -> int {
   tie _Argot-Kit{input-ref} = k;
   borrow(input-ref, (xs) => {
-    lift {core::list.length(xs)}
+    lift {core::list::length(xs)}
   })
 }
 
 define export-state(k: &argot-kit) -> list(string) {
   tie _Argot-Kit{input-ref} = k;
-  core::sync.cell.clone(input-ref)
+  core::sync.cell::clone(input-ref)
 }
 
 define import-state(k: &argot-kit, xs: list(string)) -> unit {
   tie _Argot-Kit{input-ref} = k;
-  core::sync.cell.mutate(input-ref, (_) => {
+  core::sync.cell::mutate(input-ref, (_) => {
     lift {xs}
   })
 }
 
 define pop-key(k: &argot-kit, key: &string) -> bool {
   tie _Argot-Kit{input-ref} = k;
-  core::sync.cell.modify(input-ref, (input) => {
+  core::sync.cell::modify(input-ref, (input) => {
     let input = axiom-T(input);
     let Pair(ys, zs) = _break-at-key(input, key);
     match zs {

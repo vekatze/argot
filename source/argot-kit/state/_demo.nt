@@ -1,6 +1,6 @@
 import {
-  argot-kit {make-argot-kit},
-  argot-kit.state {pop-key},
+  this::argot-kit {make-argot-kit},
+  this::argot-kit.state {pop-key},
 }
 
 define zen() -> unit {

@@ -20,7 +20,7 @@ define report(e: error) -> string {
     format("Could not parse `{}` at `{}`", List::[value, key])
   | Remaining-Arguments(rest) =>
     format("Extra arguments: {}", List::[
-      core::string.intercalate(rest, *" "),
+      core::string::intercalate(rest, *" "),
     ])
   | Unexpected-End-Of-Input =>
     *"Unexpected end of input"

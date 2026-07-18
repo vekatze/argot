@@ -1,7 +1,7 @@
 import {
-  argot {argot},
-  argot-kit.state {export-state, get-num-of-items, import-state},
-  error {Remaining-Arguments, error},
+  this::argot {argot},
+  this::argot-kit.state {export-state, get-num-of-items, import-state},
+  this::error {Remaining-Arguments, error},
 }
 
 constant end-of-input: argot(unit) {
