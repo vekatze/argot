@@ -42,17 +42,16 @@ inline optional<a>(p: argot(a)) -> argot(?a) {
 
 inline many<a>(!p: argot(a)) -> argot(list(a)) {
   (k) => {
-    let f =
-      define loop() -> either(error, list(a)) {
-        match p(k) {
-        | Left(_) =>
-          Right(Nil)
-        | Right(v) =>
-          try vs = loop();
-          Right(Cons(v, vs))
-        }
-      };
-    f()
+    define go() -> either(error, list(a)) {
+      match p(k) {
+      | Left(_) =>
+        Right(Nil)
+      | Right(v) =>
+        try vs = go();
+        Right(Cons(v, vs))
+      }
+    };
+    go()
   }
 }
 
